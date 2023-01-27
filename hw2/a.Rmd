@@ -1,0 +1,273 @@
+---
+title: "Statistical models : Homework 2 "
+output: pdf_document
+author : " Priyanshi Shah and Sourabh Prakash"
+date: "2023-01-27"
+---
+
+# **Question 1**
+
+a.  Perform some simulations to check that the least squares coefficients are indeed normally distributed under the standard assumptions.
+
+Solution: We first installed the package 'car' for this solution and imported using the following code.
+
+```{r}
+library(ggplot2)
+library(car) 
+require(car)
+```
+
+```{r}
+#making a function sample_size which returns slop and intercept list
+sample_size<-function(n){ 
+# x with a uniform distribution of [-1,1]  
+x= runif(n,-1,1) 
+e=rnorm(n,0,0.5)
+#Computing y
+y=1+2*x+e 
+linear_model=lm(y~x) 
+#print(summary(model_fit))
+values<- coef(linear_model) 
+# getting the slope and intercept values from the linear model
+Intercept <-values[1]
+Slope <-values[2]
+#putting them into variables
+  value_list<-list("int"=Intercept,"slope"=Slope)
+  return(value_list)
+} 
+iter<-list(50,100,200,500)
+final_list<-list()
+final_list_int<-list()
+final_list_slope<-list()
+for(i in 1:1000){
+for (n in iter){
+      model_n=sample_size(50)
+    final_list_int<-append(final_list_int,model_n$int)
+    final_list_slope<-append(final_list_slope,model_n$slope)
+} 
+  }
+
+```
+
+```{r}
+# Plot Normal Q_Q Plot of intercepts
+qqnorm(unlist(final_list_int))
+qqline(unlist(final_list_int),col="yellow",lwd=2)
+```
+
+```{r}
+#Plot Normal Q_Q Plot of slopes
+qqnorm(unlist(final_list_slope))
+qqline(unlist(final_list_slope),col="blue",lwd=2)
+```
+
+### Joint Normal Plots
+
+Now plotting joint normal plot s for slope and intercepts
+
+```{r}
+qplot(unlist(final_list_int),unlist(final_list_slope),geom='bin2d')
+```
+
+Inference: From the marginal plots we can clearly see almost all the points fitting almost linearly in the plot.
+
+The joint distribution plot clearly shows the dependence
+
+### Question 1(b)
+
+```{r}
+N<-list(50,100,200,500)
+K<-list(2,5,10,20,50)
+final_list_q2_int<-list()
+final_list_q2_slope<-list()
+n_sample_question2<-function(n,e){ x_= runif(n,-1,1)
+y_=2*x_+1+e
+  model_fit=lm(y_~x_)
+  temp<- coef(model_fit)
+  Intercept <-temp[1]
+  Slope <-temp[2]
+  list_temp<-list("int"=Intercept,"slope"=Slope)
+  return(list_temp)
+}
+```
+
+```{r}
+# Calculating for 20 different setting and
+for (p in K){ 
+for(k in N){
+final_list_q2_int<-list() 
+final_list_q2_slope<-list()
+for(j in 1:1000){
+    e_dash=rt(k,p)
+    list_question2=n_sample_question2(k,e_dash)
+    final_list_q2_int<-append(final_list_q2_int,list_question2$int)
+    final_list_q2_slope<-append(final_list_q2_slope,list_question2$slope)
+}
+#Marginal
+qqnorm(unlist(final_list_q2_int))
+qqline(unlist(final_list_q2_int), col="yellow", lwd=2)
+qqnorm(unlist(final_list_q2_slope))
+qqline(unlist(final_list_q2_slope), col="blue", lwd=2)
+
+#Joint
+print(qplot(unlist(final_list_q2_int),unlist(final_list_q2_slope), geom='bin2d'))
+
+  }}
+```
+
+It can be seen that the distribution of the least squares coefficients resembles the normal distribution more and more as the degrees of freedom rise. The distribution of the least squares coefficients. The distribution of the least squares coefficients also becomes more stable and less influenced by the selection of the distribution of errors as sample size rises.
+
+# Question 2
+
+This problem is meant as a practice for performing diagnostics. Consider the Boston\
+dataset in the package MASS. Fit a linear model with medv as response, omitting all the discrete\
+predictor variables.
+
+Solution: We first import the Boston data
+
+```{r}
+library(MASS)
+data("Boston")
+data_set_final<-subset(Boston,select =-c(4,9))
+```
+
+```{r}
+#Fitting the model
+model_fit=lm(medv~.,data=data_set_final)
+```
+
+```{r}
+#plotingt the model
+plot(model_fit ,which=1,pch=16)
+```
+
+```{r}
+# Seeing residuals
+residualPlots(model_fit)
+```
+
+1)  Mean
+
+```{r}
+mean(model_fit$residuals)
+```
+
+```{r}
+avPlots(model_fit)
+```
+
+Inference: Since the mean is not centered around zero, we can see this from the first plot. Examining the residual vs. fitted values to determine the mean for each variables We see a curve in the graph even though the residuals' mean is generally heading toward zero. There is a curve in the mean line of the residual plot for the variables crim, dis,tax,black, and lstat.
+
+2.  Variance
+
+```{r}
+ plot(model_fit ,which=1,pch=16)
+```
+
+```{r}
+residualPlots(model_fit)
+```
+
+```{r}
+avPlots(model_fit) #Taking AV plot to take into consideration the added error by oth
+```
+Inference:
+We notice that the distribution of the points is not equal; variance is not. We see a small fan shape in age, crim, zn, industries, dis, tax, and statistic data. Almost all of the characteristics' variance varies; it is not constant; 
+
+3.  Normality
+
+```{r}
+plot(model_fit,which=2,cex=1,pch=16)
+```
+
+```{r}
+qqPlot(model_fit)
+```
+
+It does not seem normal because the extreme values don't fit into the confidence band.
+All the standard assumptions are not followed, that is mean is not 0, variance is not homoscedatic and no normality/
+#### Question 2 b) Outliers in predictor:
+
+```{r}
+plot(hatvalues(model_fit),type='h', col="blue", ylab="Hat Values", main="Hat values")
+p=12 ; n=506
+abline(h = 2*(p+1)/n, lty=2)
+```
+```{r}
+sort(hatvalues(model_fit),decreasing = TRUE)[1]
+
+```
+Inference : 381 is the most significant outlier in the predictor
+
+```{r}
+summary(data_set_final)
+```
+The crim,zn,black values for this data point take up extreme values that causes it to become an outlier.
+
+
+#### Question 2 c) Outliers in response
+
+```{r}
+plot(abs(rstudent(model_fit)), type='h', col="blue", ylab="Externally Studentized Residuals")
+abline(h = qt(.95, n-p-2), lty=2) # threshold for suspects
+```
+
+
+
+
+```{r}
+sort(rstudent(model_fit),decreasing = TRUE)[1]
+```
+most significant is 369
+
+```{r}
+summary(data_set_final)
+```
+The zn,age values for this data point take up extreme values that causes it to become an outlier.
+
+
+#### Question 2 d) Influential observations
+
+```{r}
+# Cook's distances
+plot(model_fit, which=4, col="blue", lwd=2)
+abline(h = 1, lty=2) # threshold for suspects (not visible on this plot)
+
+```
+
+```{r}
+# DFBETAS
+par(mfrow=c(2,3))
+for (j in 1:12){
+plot(abs(dfbetas(model_fit)[,j]), col=4, type='h', ylab='DFBETAS')
+abline(h = 2/sqrt(n), lty=2) # threshold for suspects 
+}
+```
+```{r}
+# DFFITS
+par(mfrow=c(1,1))
+plot(abs(dffits(model_fit)), typ='h', col=4, ylab='DFFITS')
+abline(h = 2*sqrt(p/n), lty=2)
+```
+```{r}
+```
+
+
+```{r}
+require(ellipse)
+plotcorr(cor(data_set_final[, -2]))
+```
+```{r}
+plot(vif(model_fit), type='h', col=6, lwd=3)
+abline(h = 10, lty=2) 
+```
+```{r}
+C = cor(data_set_final[, -2]) # correlation matrix for the predictors 
+L = eigen(C) # eigenvalues
+K = max(L$val)/L$val # condition indices
+plot(K, type='h', col=6, lwd=3)
+abline(h = 1000, lty=2)
+```
+A high VIF indicates stronger correlation.
+None of the features are highly correlated for this model.
+Contributions: Both the team members Sourabh Prakash and Priyanshi Shah have contributed equally to the homework by discussing the key points and logic together and doing pair programming. For the implementation part question 1 was contributed by Sourabh Prakash and question 2 by Priyanshi Shah.
