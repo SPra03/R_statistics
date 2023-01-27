@@ -1,0 +1,232 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={R Notebook},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{R Notebook}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#To set path to the working directory, please paste your path below where 04cars.rda dataset is located and uncomment the code below}
+\CommentTok{\#setwd("D:/projects/R\_Projects/Sandbox/Stats\_model\_assignments") }
+\CommentTok{\#getwd()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{question-1}{%
+\subsubsection{Question 1}\label{question-1}}
+
+Write a function confBand(x, y, conf=0.95) taking in a predictor vector
+(x1, . . . , xn) and a response vector y = (y1,\ldots,yn) and return a
+plot with the points (x1,y1),\ldots,(xn,yn), the least squares line, and
+the confidence band at level conf. Apply your function to hp and mpg
+from the 04cars dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Loading the cars dataset}
+\FunctionTok{load}\NormalTok{(}\StringTok{"04cars.rda"}\NormalTok{)}
+\NormalTok{data }\OtherTok{=}\NormalTok{ dat[,}\FunctionTok{c}\NormalTok{(}\DecValTok{13}\NormalTok{,}\DecValTok{15}\NormalTok{)]}
+\FunctionTok{names}\NormalTok{(data) }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\StringTok{"hp"}\NormalTok{, }\StringTok{"mpg"}\NormalTok{)}
+
+\CommentTok{\#defining the confBand function}
+\NormalTok{confBand }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x,y, }\AttributeTok{conf =} \FloatTok{0.95}\NormalTok{)\{}
+  
+\NormalTok{  n }\OtherTok{=} \DecValTok{100}
+  \CommentTok{\#Plotting the linear model}
+\NormalTok{  linear\_model }\OtherTok{=} \FunctionTok{lm}\NormalTok{(y}\SpecialCharTok{\textasciitilde{}}\NormalTok{x)}
+\NormalTok{  p}\OtherTok{=}\DecValTok{1}
+\NormalTok{  df\_1 }\OtherTok{=}\NormalTok{ p}\SpecialCharTok{+}\DecValTok{1} \CommentTok{\#degree of freedom 1}
+\NormalTok{  df\_2}\OtherTok{=}\NormalTok{n}\SpecialCharTok{{-}}\NormalTok{p}\DecValTok{{-}1}  \CommentTok{\#degree of freedom 2}
+\NormalTok{  fquartile }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{((p}\SpecialCharTok{+}\DecValTok{1}\NormalTok{) }\SpecialCharTok{*} \FunctionTok{qf}\NormalTok{(conf, df\_1,df\_2))}
+  
+  \CommentTok{\#Calculating y bar}
+\NormalTok{  y\_ }\OtherTok{=} \FunctionTok{predict}\NormalTok{(linear\_model, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{x=}\NormalTok{x), }\AttributeTok{se =}\NormalTok{  T)}
+  
+  \CommentTok{\#Calculating the upper and lower confidence bounds}
+\NormalTok{  cb\_upper }\OtherTok{=}\NormalTok{  (y\_}\SpecialCharTok{$}\NormalTok{fit }\SpecialCharTok{+}\NormalTok{ ((fquartile)}\SpecialCharTok{*}\NormalTok{y\_}\SpecialCharTok{$}\NormalTok{se.fit))}
+\NormalTok{  cb\_lower }\OtherTok{=}\NormalTok{  (y\_}\SpecialCharTok{$}\NormalTok{fit }\SpecialCharTok{{-}}\NormalTok{ ((fquartile)}\SpecialCharTok{*}\NormalTok{y\_}\SpecialCharTok{$}\NormalTok{se.fit))}
+  
+
+  \FunctionTok{plot}\NormalTok{(x,y, }\AttributeTok{type =} \StringTok{\textquotesingle{}p\textquotesingle{}}\NormalTok{)}
+  
+  \FunctionTok{lines}\NormalTok{(x,cb\_upper, }\AttributeTok{type =} \StringTok{\textquotesingle{}l\textquotesingle{}}\NormalTok{, }\AttributeTok{col =}\StringTok{"green"}\NormalTok{)}
+  \FunctionTok{lines}\NormalTok{(x,cb\_lower, }\AttributeTok{type =} \StringTok{\textquotesingle{}l\textquotesingle{}}\NormalTok{, }\AttributeTok{col =}\StringTok{"green"}\NormalTok{)}
+  \FunctionTok{abline}\NormalTok{(linear\_model, }\AttributeTok{col =} \StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+  \FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend=}\FunctionTok{c}\NormalTok{(}\StringTok{"Linear model"}\NormalTok{, }\StringTok{"Conf band"}\NormalTok{),}
+       \AttributeTok{col=}\FunctionTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"green"}\NormalTok{), }\AttributeTok{lty=}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{, }\AttributeTok{cex=}\FloatTok{0.8}\NormalTok{, }\AttributeTok{text.font=}\DecValTok{4}\NormalTok{, }\AttributeTok{bg=}\StringTok{\textquotesingle{}001000\textquotesingle{}}\NormalTok{)}
+  
+  \CommentTok{\#return (list(upb = cb\_upper, lwb = cb\_lower, y\_pred = y\_$fit, pred\_se = y\_$se.fit, Fvalue = fquartile))}
+\NormalTok{\}}
+
+\FunctionTok{confBand}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{hp, data}\SpecialCharTok{$}\NormalTok{mpg)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\hypertarget{question-2}{%
+\subsubsection{Question 2}\label{question-2}}
+
+Let n = 100 and draw x1, . . . , xn ∼ Unif(0, 1), which stay fixed in
+what follows. Repeat the following experiment N = 1000 times.
+
+• Generate yi = 1 + xi + εi, with εi i.i.d. N (0, 0.2). • Compute the
+99\% confidence band and record whether it contains the true line, or
+not.
+
+Summarize the result of this numerical experiment by returning the
+proportion of times (out of N) that the confidence band contained the
+true line.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\OtherTok{=} \FunctionTok{runif}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{)}
+\NormalTok{y\_true }\OtherTok{=} \FloatTok{1.000}\SpecialCharTok{+}\NormalTok{x}
+\NormalTok{contains\_true\_line }\OtherTok{=} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, }\DecValTok{1000}\NormalTok{)}
+
+\CommentTok{\# looping 1000 times}
+\ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{1000}\NormalTok{)\{}
+  
+  \CommentTok{\#calculating the error with N(0,0.2)}
+\NormalTok{  e }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.2}\NormalTok{)}
+\NormalTok{  y }\OtherTok{=} \FloatTok{1.000}\SpecialCharTok{+}\NormalTok{x}\SpecialCharTok{+}\NormalTok{e }\CommentTok{\#generating y for every j}
+  
+\NormalTok{  CI }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lower =} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,}\DecValTok{100}\NormalTok{),}\AttributeTok{upper =} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,}\DecValTok{100}\NormalTok{),}\AttributeTok{contain\_true\_value =} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,}\DecValTok{100}\NormalTok{))}
+  \CommentTok{\#fitting the linear model}
+\NormalTok{  linear\_model}\OtherTok{=} \FunctionTok{lm}\NormalTok{(y}\SpecialCharTok{\textasciitilde{}}\NormalTok{x)}
+  
+\NormalTok{  n }\OtherTok{=} \DecValTok{100}
+\NormalTok{  p}\OtherTok{=}\DecValTok{1}
+\NormalTok{  df\_1 }\OtherTok{=}\NormalTok{ p}\SpecialCharTok{+}\DecValTok{1}
+\NormalTok{  df\_2}\OtherTok{=}\NormalTok{n}\SpecialCharTok{{-}}\NormalTok{p}\DecValTok{{-}1}
+\NormalTok{  conf }\OtherTok{=} \FloatTok{0.99}
+\NormalTok{  F\_quartile }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{((p}\SpecialCharTok{+}\DecValTok{1}\NormalTok{) }\SpecialCharTok{*} \FunctionTok{qf}\NormalTok{(conf, df\_1,df\_2))}
+\NormalTok{  pred\_op }\OtherTok{=} \FunctionTok{predict}\NormalTok{(linear\_model, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{hp=}\NormalTok{x), }\AttributeTok{se =}\NormalTok{  T)}
+  
+
+\NormalTok{  CI}\SpecialCharTok{$}\NormalTok{lower }\OtherTok{=}\NormalTok{ (pred\_op}\SpecialCharTok{$}\NormalTok{fit }\SpecialCharTok{{-}}\NormalTok{ ((F\_quartile)}\SpecialCharTok{*}\NormalTok{pred\_op}\SpecialCharTok{$}\NormalTok{se.fit))}
+\NormalTok{  CI}\SpecialCharTok{$}\NormalTok{upper }\OtherTok{=}\NormalTok{ (pred\_op}\SpecialCharTok{$}\NormalTok{fit }\SpecialCharTok{+}\NormalTok{ ((F\_quartile)}\SpecialCharTok{*}\NormalTok{pred\_op}\SpecialCharTok{$}\NormalTok{se.fit))}
+\NormalTok{  CI}\SpecialCharTok{$}\NormalTok{contain\_true\_value }\OtherTok{=}\NormalTok{ (CI}\SpecialCharTok{$}\NormalTok{lower }\SpecialCharTok{\textless{}=}\NormalTok{y\_true }\SpecialCharTok{\&}\NormalTok{ CI}\SpecialCharTok{$}\NormalTok{upper }\SpecialCharTok{\textgreater{}=}\NormalTok{ y\_true) }
+  
+  \CommentTok{\#contains\_true\_line[j] = ((mean(CI$contain\_true\_value)) ==1)}
+\NormalTok{  contains\_true\_line[j] }\OtherTok{=}\NormalTok{ ((}\FunctionTok{sum}\NormalTok{(CI}\SpecialCharTok{$}\NormalTok{contain\_true\_value)) }\SpecialCharTok{==}\NormalTok{n)}
+\NormalTok{\}}
+
+
+\CommentTok{\#answer = (sum(contains\_true\_line)/1000)}
+\NormalTok{answer }\OtherTok{=}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(contains\_true\_line)}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{)}
+
+\FunctionTok{sprintf}\NormalTok{(}\StringTok{\textquotesingle{}Result of the experiment \%f\textquotesingle{}}\NormalTok{, answer)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Result of the experiment 0.993000"
+\end{verbatim}
+
+\end{document}
