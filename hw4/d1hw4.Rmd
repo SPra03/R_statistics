@@ -1,0 +1,425 @@
+---
+title: 'Statistical Models : Homework 4'
+output:
+  pdf_document: default
+  html_document: default
+author: "Priyanshi Shah and Sourabh Prakash"
+  
+date: "2023-02-08"
+---
+
+# Question 1
+
+In this problem, you practice working with predictor variables that are discrete. Consider the Boston dataset in the package MASS. Take as response the median property value.
+
+```{r}
+library(MASS)
+library(ggplot2)
+library(quantreg)
+head(Boston)
+```
+
+### 1(a) For chas variable(Charles river)
+
+Look at side-by-side boxplots for medv where the groups are defined by chas. Comment on what you observe. In particular, compare the different groups visually. Then fit a model explaining medv as a function of chas. Output an ANOVA table. What is the F-test testing? Is the result consistent with the boxplots?
+
+### Creating Boxplot
+
+```{r}
+#Creating a boxplot
+boxplot(Boston$medv ~ Boston$chas, col='steelblue', 
+        main = "Median Property Value(Medv) grouped by Charles River(chas)", 
+        xlab = "Charles River Presence", ylab = "Median Property Value")
+```
+
+**Inference :**
+
+-   For chas = 1, the medv values lie between the 75 th and 25th quantile whereas for chas = 0, there are many values after the 75th quantile.
+
+-   The median values for both 0 and 1 category can be seen very closer to each other, approximately ranging near 20 to 25.
+
+-   We can see that median property values tend to be higher for properties near the Charles River compared to properties far from the Charles River
+
+-   This suggests that proximity to the Charles River has a positive effect on median property values.
+
+```{r}
+#Comparing different groups visually
+table(Boston$chas)
+plot(Boston$medv,Boston$chas,pch = 19,  col=as.factor(Boston$chas))
+```
+
+Inference:
+
+-   We can also visually see from the table and graph above that there are more data points for chas = 0 than chas = 1
+
+-   We can also observe that for chas = 0 the cluster values are more spread which can also be seen from the boxplot.
+
+### Fitting model
+
+```{r}
+#Fitting  a linear model
+model_chas = lm(medv ~ chas, data = Boston)
+summary(model_chas)
+```
+
+### Analysis of Variance (ANOVA)
+
+```{r}
+anova(model_chas)$F
+```
+
+```{r}
+anova(model_chas)
+```
+
+Inference : What is the F-test testing? Is the result consistent with the boxplots?
+
+-   F-test testing procedure that compares the variability of two or more sets of data
+
+-   For F test value =1 the variances are equal which is Null hypothesis and if it is not equal to 1 then there is variability
+
+-   We can also see that the F value here is 15.97 which denotes significant variability
+
+-   Null hypothesis for this case is : that the coefficients for the **`chas`** variable are equal to zero. This means that the **`chas`** variable has no effect on the median property value (**`medv`**). The null hypothesis assumes that the **`chas`** variable is not a significant predictor of **`medv`**. The alternative hypothesis is that the coefficients for the **`chas`** variable are not equal to zero, meaning that the **`chas`** variable does have an effect on **`medv`** and is a significant predictor.
+
+-   Since the p - value if smaler than the significance level (0.05), the null hypothesis fails and we conclude that the **`chas`** variable is significantly related to **`medv`** meaning that the **`chas`** variable does have an effect on **`medv`** and is a significant predictor.
+
+-   This result is also consistent with what we can see from the boxplots that Charles river has impact that proximity to the Charles River has a positive effect on median property values.
+
+### 1(b) For Radial highway variable
+
+Repeat with rad in place of chas.
+
+### Creating Boxplot
+
+```{r}
+#Creating boxplot 
+boxplot(Boston$medv ~ Boston$rad, col='steelblue', 
+        main = "Median Property Value(Medv) grouped by rad", 
+        xlab = "rad", ylab = "Median Property Value")
+```
+
+Inference:
+
+-   Since, the boxes are of different heights, we can say that the median property value is not the same across all levels of **`rad.`**
+
+-   We can also observe that for higher value of rad (24) , the median is less as compared to the closer rad values(1-8), that is for higher rad value (24 ) we can see that medv values is less. This means that the accessibility to radial highways generally lowers the median property values.
+
+```{r}
+#Visually seeing the difference
+table(Boston$rad)
+plot(Boston$medv,Boston$rad,pch = 19,  col=as.factor(Boston$rad))
+```
+
+Inference:
+
+-   We can see that the data values for rad from 1-8 are quite well spread but for rad =24 are sparsely spread out with one data point above 40.
+
+### Fitting the model
+
+```{r}
+#Fitting the model
+model_rad = lm(medv ~ rad, data = Boston)
+summary(model_rad)
+```
+
+### Analysis of Variance (ANOVA)
+
+```{r}
+anova(model_rad)$F
+```
+
+```{r}
+anova(model_rad)
+```
+
+Inference : What is the F-test testing? Is the result consistent with the boxplots?
+
+-   F-test testing procedure that compares the variability of two or more sets of data
+
+-   For F test value =1 the variances are equal which is Null hypothesis and if it is not equal to 1 then there is variability
+
+-   We can also see that the F value here is 85.91 which denotes significant variability
+
+-   Null hypothesis for this case is : that the coefficients for the rad variable are equal to zero. This means that the rad variable has no effect on the median property value (**`medv`**). The null hypothesis assumes that the rad variable is not a significant predictor of **`medv`**. The alternative hypothesis is that the coefficients for the rad variable are not equal to zero, meaning that the **`rad`** variable does have an effect on **`medv`** and is a significant predictor.
+
+-   Since the p - value if smaller than the significance level (0.05), the null hypothesis fails and we conclude that the **`rad`** variable is significantly related to **`medv`** meaning that the **`rad`** variable does have an effect on **`medv`** and is a significant predictor.
+
+-   This result is also consistent with what we can see from the boxplots that less accessibility to highways has an effect on median property values
+
+### 1(c) Boxplot
+
+Produce a nice boxplot display of medv where the groups are defined by chas and rad jointly. Comment on what you observe. Then look at an interaction plot. Then fit a model explaining medv as a function of chas and rad with interactions. Output an ANOVA table. What are the different F-tests testing? Compare with the previous F-test as appropriate. Are the results of these tests consistent with the plots you just looked at?
+
+```{r}
+boxplot(medv ~ chas * rad, data = Boston, 
+        main = "Median Property Value by Charles River and Accessibility Index", 
+        xlab = "Charles River and Accessibility Index", 
+        ylab = "Median Property Value",col=c("purple", "pink"))
+
+legend("bottom", inset = 0.02, title = "Legend", c("chas : 0", "chas :1"),
+       fill = c("purple", "pink"), horiz = TRUE, cex = 0.6)
+
+```
+
+Inference:
+
+-   We can see that the grouping is done in 2 forms for chas where 1 and 0 indicate pink and purple boxes along with 9 values of rad for each, hence it creates 18 plots
+
+-   Another observation is that for some chas groups values(1) the rad values are missing.
+
+### Interaction plot
+
+#### Grouped by Chas
+
+```{r fig.align='center'}
+interaction.plot(Boston$rad, Boston$chas, Boston$medv, col = Boston$medv)
+```
+
+Inference: We can see the variable trend for different values of rad for each of 0 and 1 groups chas.
+
+#### Grouped by Rad
+
+```{r fig.align='center'}
+interaction.plot(Boston$chas, Boston$rad, Boston$medv,
+                 xlab = "Charles River", 
+                 ylab = "Accessibility Index", col = Boston$medv)
+```
+
+Inference: We can see the lines for rad of different groups of chas for each of 0 and 1 groups
+
+### Fitting model and ANOVA
+
+```{r}
+model_combined= lm(medv ~ chas * rad, data = Boston)
+summary(model_combined)
+anova(model_combined)
+```
+
+Inference:
+
+F tests are used for different purposes that is for:
+
+-   testing equality of variance to test hypothesis of equality of two population variances
+
+-   testing equality of several means to test for equality of several means is carried out by the technique called ANOVA
+
+-   for testing significance of regression is used to test the significance of the regression model
+
+Comparision to previous F test:
+
+As seen before, the chas and rad F test values were 15.97 and 85.91 but here we can see an increase in F test values to be 19.10 and 89.97 for degree of freedom 1
+
+We can also see the combined effect of chas and rad where the F test values is 10.86 for degree of freedom 1. We can also see a decrease in significance of p values.
+
+The observed values don't seem very consistent with the plots
+
+### 1(d) Checking for chas
+
+It makes sense that median property value decreases with the percentage of lower status population lstat, and this is indeed what is observed here. Does the rate of decrease depend on whether the area borders the Charles River? Produce a plot that helps answer that question.
+
+```{r}
+plot(Boston$medv ~ Boston$lstat, col='steelblue', 
+     main = "Median Property Value(Medv) vs  Lstat", 
+     xlab = "Lstat", ylab = "Median Property Value")
+m2 = lm(Boston$medv ~ Boston$lstat)
+abline(m2, col="black")
+```
+
+We can observes that as the the value of lstat decreases, the values of medv increases. It is almost inversely proportional.
+
+```{r}
+ind = (Boston$chas==0)
+plot(Boston$medv[ind] ~ Boston$lstat[ind], data = Boston, 
+     main = "Plot medv vs lstat",col="pink",
+     xlab="Lstat", ylab = "Medv")
+fit = lm(Boston$medv[ind] ~ Boston$lstat[ind], data = Boston)
+abline(fit, col="pink", lwd=2)  
+ind = (Boston$chas==1)
+points(Boston$medv[ind] ~ Boston$lstat[ind], data = Boston, col="purple", pch=19)
+fit = lm(Boston$medv[ind] ~ Boston$lstat[ind], data = Boston)
+abline(fit, col="purple", lwd=2)  
+```
+
+Inference:
+
+-   We can see from the interaction plot that the houses near the Charles river (chas =1 ) that is the purple dots has a higher median property value as compared to the ones that are far away from the Charles river(chas =0) that is the pink dots.
+
+# Question 2
+
+Consider the same dataset and turn to the problem of fitting a polynomial model explaining medv as a function of lstat.
+
+### Fit a polynomial model of degree 1
+
+First we will fit a model of degree of freedom = 1
+
+```{r}
+#Fit a polynomial model of degree 1 
+fit <- lm(medv ~ poly(lstat, 1), data = Boston)
+plot(Boston$lstat, Boston$medv, 
+     main = "Median Property Value vs. Lower Status Population(DEGREE 1)", 
+     xlab = "Lower Status Population", 
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat), predict(fit, 
+      newdata = data.frame(lstat = sort(Boston$lstat))), 
+      col = "purple")
+#summary(fit)
+```
+
+**2a** Fit a polynomial model of degree 3 by least squares.
+
+### Fit a polynomial model of degree 3 by least squares.
+
+```{r}
+#Fit a polynomial model of degree 3 by least squares.
+fit <- lm(medv ~ poly(lstat, 3), data = Boston)
+plot(Boston$lstat, Boston$medv, 
+     main = "Median Property Value vs. Lower Status Population (DEGREE 3)", 
+     xlab = "Lower Status Population", 
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat), predict(fit, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple")
+summary(fit)
+```
+
+Similar plot with different library:
+
+```{r}
+#Fit a polynomial model of degree 3 by regression qualtile library - rq
+fit <- rq(medv ~ poly(lstat, 3), data = Boston, tau = 0.5)
+plot(Boston$lstat, Boston$medv, 
+     main = "Median Property Value vs. Lower Status Population (DEGREE 3)",
+     xlab = "Lower Status Population",
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat), 
+      predict(fit, newdata = data.frame(lstat = sort(Boston$lstat))), 
+      col = "purple")
+#summary(fit)
+```
+
+Inference:
+
+As we can see from the above plots of degree of polynomial = 1 and degree of polynomial = 3, we can see a better fit in degree of polynomial = 3 rather than degree of polynomial = 1 .
+
+This is because degree of polynomial = 3 model adjusts more to the current data
+
+For degree of polynomial = 1 we can see high bias whereas for degree of polynomial = 3 there is much more optimal fit.
+
+**2b Repeat with each robust method covered in the lecture notes/slides**.
+
+### Robust methods
+
+#### RQ
+
+```{r}
+fit_rq <- rq(medv ~ poly(lstat, 3), data = Boston, tau = 0.5)
+plot(Boston$lstat, Boston$medv, 
+     main = "Median Property Value vs. Lower Status Population(RQ)",
+     xlab = "Lower Status Population", 
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat), 
+      predict(fit_rq, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+
+```
+
+#### Huber's M-estimation:
+
+```{r}
+m.huber = rlm(Boston$medv ~ poly(Boston$lstat, 3), psi = psi.huber)
+summary(m.huber)
+plot(Boston$lstat, Boston$medv, 
+     main = "Median Property Value vs. Lower Status Population(Huber)", 
+     xlab = "Lower Status Population", 
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat),
+      predict(m.huber, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+```
+
+#### Hampel's M-estimation:
+
+```{r}
+m.hampel = rlm(Boston$medv ~ poly(Boston$lstat, 3), psi = psi.hampel)
+summary(m.hampel)
+plot(Boston$lstat, Boston$medv, 
+     main = "Median Property Value vs. Lower Status Population(Hampel)",
+     xlab = "Lower Status Population", 
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat),
+      predict(m.hampel, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+```
+
+#### Tukey's M-estimation:
+
+```{r}
+m.tukey = rlm(Boston$medv ~ poly(Boston$lstat, 3), psi = psi.bisquare)
+summary(m.tukey)
+plot(Boston$lstat, Boston$medv,
+     main ="Median Property Value vs. Lower Status Population(Tukey)", 
+     xlab = "Lower Status Population", 
+     ylab = "Median Property Value")
+lines(sort(Boston$lstat), 
+      predict(m.tukey, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+```
+
+#### High breakdown point methods - Least Median of Squares (LMS)
+
+```{r}
+# high breakdown point methods
+fit.lms = lmsreg(medv ~ lstat, data = Boston)
+summary(fit.lms)
+plot(Boston$lstat, Boston$medv, 
+     main =  "Median Property Value vs. Lower Status Population(LMS)", 
+     xlab = "Lower Status Population", ylab = "Median Property Value")
+lines(sort(Boston$lstat), 
+      predict(fit.lms,
+      newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+```
+
+#### High breakdown point methods - Least Trimmed Squares (LTS)
+
+```{r}
+fit.lts = ltsreg(medv ~ lstat, data = Boston)
+summary(fit.lts)
+plot(Boston$lstat, Boston$medv,
+     main =  "Median Property Value vs. Lower Status Population(LTS)", 
+     xlab = "Lower Status Population", ylab = "Median Property Value")
+lines(sort(Boston$lstat), 
+      predict(fit.lts,
+      newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+```
+
+#### **2c Produce a scatterplot and overlay all these fits with different colors and a legend.**
+
+```{r}
+
+plot(Boston$lstat, Boston$medv, 
+     main = "Scatterplot and Overlay for robust methods", 
+     xlab = "Lower Status Population", ylab = "Median Property Value")
+lines(sort(Boston$lstat), predict(fit_rq, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "purple", lwd = 2)
+lines(sort(Boston$lstat), predict(m.hampel, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "darkgrey", lwd = 2)
+lines(sort(Boston$lstat), predict(m.huber, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "green", lwd = 2)
+lines(sort(Boston$lstat), predict(m.tukey, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "orange", lwd = 2)
+lines(sort(Boston$lstat), predict(fit.lms, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "red", lwd = 2)
+lines(sort(Boston$lstat), predict(fit.lts, newdata = data.frame(lstat = sort(Boston$lstat))),
+      col = "blue", lwd = 2)
+legend("topright", inset = 0.02, 
+       title = "Legend", c("RQ", "Hampel","Huber","Tukey","LMS","LTS"),
+       fill = c("purple","darkgrey","green","orange","red","blue"), 
+       horiz = FALSE, cex = 0.7)
+
+```
+
+Team Contributions :
+
+Both the team members Sourabh Prakash and Priyanshi Shah have contributed equally to the homework by discussing the key points and logic together and doing pair programming. For the implementation part question 1 a,b,c was contributed by Priyanshi Shah and question 1d and 2a,b,c by Sourabh Prakash. The conclusions were written together for all the parts of question 1 and 2
