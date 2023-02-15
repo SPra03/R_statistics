@@ -1,0 +1,113 @@
+---
+title: 'Statistical Models : Homework 4'
+output:
+  pdf_document: default
+  html_document: default
+author: ""
+  
+date: "2023-02-06"
+---
+
+# Question 1
+
+```{r}
+library(MASS)
+library(ggplot2)
+library(quantreg)
+
+```
+
+
+```{r}
+
+boxplot(Boston$medv ~ Boston$chas,
+        col='steelblue')
+```
+
+```{r}
+#Fitting  a linear model
+model_chas = lm(medv ~ chas, data = Boston)
+summary(model_chas)
+```
+
+```{r}
+anova(model_chas)
+```
+
+### 1(b) 
+
+Repeat with rad in place of chas.
+
+
+
+```{r}
+boxplot(Boston$medv ~ Boston$rad,
+        col='steelblue')
+```
+
+
+```{r}
+model_rad = lm(medv ~ rad, data = Boston)
+summary(model_rad)
+```
+
+```{r}
+anova(model_rad)
+```
+
+```{r}
+boxplot(medv ~ chas * rad, data = Boston, main = "a", col=c("grey", "blue"))
+
+```
+
+
+```{r}
+interaction.plot(Boston$rad, Boston$chas, Boston$medv, col = Boston$medv)
+```
+
+
+```{r}
+model_combined= lm(medv ~ chas * rad, data = Boston)
+summary(model_combined)
+anova(model_combined)
+```
+### 1(d)
+
+It makes sense that median property value decreases with the percentage of lower status population lstat, and this is indeed what is observed here. Does the rate of decrease depend on whether the area borders the Charles River? Produce a plot that helps answer that question.
+
+```{r}
+plot(Boston$medv ~ Boston$lstat,
+        col='steelblue', main = "Median Property Value(Medv) vs  Lstat", xlab = "Lstat", ylab = "Median Property Value")
+```
+
+```{r}
+
+plot(Boston$lstat, Boston$medv, xlab = "Lower Status Population", ylab = "Median Property Value", col = Boston$chas + 1)
+
+```
+
+Question 2 Consider the same dataset and turn to the problem of fitting a polynomial model explaining medv as a function of lstat.
+
+```{r}
+
+fit <- lm(medv ~ poly(lstat, 3), data = Boston)
+plot(Boston$lstat, Boston$medv)
+lines(sort(Boston$lstat), predict(fit, newdata = data.frame(lstat = sort(Boston$lstat))), col = "red")
+
+```
+
+Huber's M-estimation:
+
+```{r}
+m.huber = rlm(medv ~ poly(lstat, 3),data = Boston, psi = psi.huber)
+m.hampel = rlm(medv ~ poly(lstat, 3),data = Boston, psi = psi.hampel)
+m.tukey = rlm(medv ~ poly(lstat, 3),data = Boston, psi = psi.bisquare)
+fit.lms = lmsreg(medv ~ lstat, data = Boston)
+fit.lts = ltsreg(medv ~ lstat, data = Boston)
+```
+
+c.  Produce a scatterplot and overlay all these fits with different colors and a legend.
+
+Team Contibutions :
+
+
