@@ -1,6 +1,6 @@
 ---
 title: "hw 5"
-author: 
+author: ""
 date: "2023-02-16"
 output: pdf_document
 ---
@@ -97,20 +97,8 @@ confint(fit)[2,]
 ```
 
 
-Here we can notice the changes in the values of Confidence intervals using studentized bootstrap and confint function:
-We can say that studentized bootstrap is better and more reliable method as compared to using the classical mettho i.e 
-confint function.But hte bootstrap methods can be computationally intensive and may take longer to compute than normal-based methods.
 
 
-# Q2:
-Perform  some  simulations  to  compare  the  length  and  confidence  level  of  the  studentized  bootstrap  confidence  interval  (from  Problem  1)  and  of  the  student  confidence  interval 
-(the  classical  one).  Compare  them  at  various  sample  sizes  and  in  settings  involving  different  distributions,  for  example,  the  normal  distribution  and  a  skewed  distribution  like  the  exponential 
-distribution (centered to have mean 0).  In the code, first briefly explain in words what you intend 
-to  do,  and  then  do  it,  and  at  the  end  offer  some  brief  comments  on  the  results  of  your  simulation 
-study.
-
-Taking sample sizes 50,100,500 and 1000 for comprison
-Also taking in varying confidence levels for comparison
 ```{r} 
 ##############
 sample_size = c(50,100,500, 1000)
@@ -276,3 +264,4 @@ for (n in sample_size){
 Inference:
 1.From the graphs we observe this as the confidence level increases, the length also increase
 2. Between the two distributions normal and skewed (exponential) we observe that the length of the exponential distribution increases. 
+
