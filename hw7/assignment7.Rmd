@@ -36,6 +36,10 @@ attempt is a 0
 • good: Successful (1) vs. failed (0) placekicks; this is our response
 variable
 
+We observe that the features in the dataset are either int(0/1) or
+numbers, so we can disregard that there is a possibility of categorical
+features or factors.
+
 ```{r}
 data = read.csv("Placekick.csv")
 ```
@@ -54,6 +58,17 @@ summary(m)
 plot(data$distance ,data$good)
 ```
 
+Inference: The coefficient of distance is -0.115, which means that for a
+unit increase in the odds of distance would result in a decrease of
+0.115 unit of good, on an average, i.e. chance of success for (being
+good) decreases by 0.115 points. Also, the p-value is less than 0.001,
+which indicates that the relationship between distance and good is
+significant.
+
+The intercept is 5.812 which indicates that when we move to 0 in the x
+axis, which represents distance, then the estimated log-odds of success
+is 5.812, which does not makes sense in this case.
+
 ### Creating a scatter plot with fitted logistic regression curve
 
 ```{r}
@@ -62,6 +77,10 @@ ggplot(data, aes(x = distance, y = good)) +
   geom_point() +
   stat_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE)
 ```
+
+Inference: We can see that in the plot the curve follows a clear
+downward trend as the distance increases. THis shows that as the
+distance increases the probablity of success decreases.
 
 ### **1(b) Now consider all predictors. Apply the forward selection algorithm to compute the forward selection path from 'intercept only' to 'full model' and chooses the model on that path that minimizes the AIC.**
 
@@ -86,7 +105,29 @@ model = glm(formula = good ~ distance + PAT + change + wind, family = binomial, 
 summary(model)
 ```
 
+The step function performs forward selection algorithm on the predictors
+and returns the best model that minimizes the AIC.
+
+The best model that we get, that minimizes the AIC is: good \~
+distance + PAT + change + wind
+
 ### 1(c) Consider the model selected by the forward selection algorithm. Compute the decision boundary when the decision threshold for the probability of success is 0.5.
+
+We compute the decision boundary for a decision threshold of 0.5 by
+finding the values of the predictor variables that correspond to a
+predicted probability of success of 0.5. This is done by solving the
+logistic regression equation for each of the predictor variables while
+setting the predicted probability of success to 0.5.
+
+B0 + B1(distance) + B2(PAT_mean) + B3(change_mean) + B4(wind_mean) = 0.5
+
+We take the mean of the observations for other predictors, for which
+decision boundary is not being calculated.
+
+In practice, the decision threshold used to make predictions is not
+always 0.5. Depending on the problem, the decision threshold can be set
+to a different value to balance the trade-off between precision and
+recall of the classifier.
 
 ```{r}
 model = glm(formula = good ~ distance + PAT + change + wind, family = binomial, data = data)
@@ -121,11 +162,48 @@ wind =  (0.5 - 4.751 - (-0.087) * mean(data$distance) - (1.229) * mean(data$PAT)
 wind
 ```
 
+The decision boundary is the line or surface that separates the two
+classes in a binary classification problem. In logistic regression, the
+decision boundary is the line or surface where the predicted probability
+of belonging to one class is equal to the decision threshold (usually
+0.5).
+
+Inference: Decision Boundary: Distance : 55.00023 pat : -1.408078 change
+: 7.382025 wind : 4.642867
+
+In the case of the placekick dataset, the decision boundary separates
+successful placekicks (good=1) from unsuccessful placekicks (good=0)
+based on the values of the predictor variables. The decision boundary
+computed using the logistic regression model represents the values of
+predictors that yield a predicted probability of success of 0.5. Any
+placekick that falls on one side of the decision boundary is predicted
+to be successful, while any placekick that falls on the other side of
+the decision boundary is predicted to be unsuccessful.
+
+So, for each predictors, the corresponding decision value is an
+indicator that if the value is more than the decision boundary than
+there is an increase in probability of success.
+
 # Question 2
 
 ### **2(a) Write a function bootGLM(x, y, B=1000) that resamples observations and returns standard errors for each of the predictor variables (when the others are present in the model) in a logistic model.**
 
 ### Function bootGLM(**x, y, B=1000**)
+
+The bootGLM function takes in the predictor variables x and response
+variable y, and the number of bootstrap samples B to generate. It then
+iterates over the predictor variables and generates bootstrap samples by
+randomly resampling the observations with replacement B times. For each
+bootstrap sample, a logistic regression model is fit using only the
+resampled predictor variable and the response variable, and the standard
+error of the estimated coefficient for that predictor variable is stored
+in se.The standard errors are stored in the boot_results matrix. After
+all the bootstrap iterations are performed, the standard error estimates
+for each predictor variable are calculated, by taking the standard
+deviation of the standard errors across the replicates using the apply()
+function. The results are returned as a data frame with one row per
+predictor variable and one column containing the standard error
+estimate.
 
 ```{r}
 bootGLM <- function(x, y, B = 1000){
@@ -133,7 +211,7 @@ bootGLM <- function(x, y, B = 1000){
   formula <- as.formula(paste("y ~", paste(names(x), collapse = " + ")))
   
   # Fit the full logistic model
-  full_model <- glm(formula, data = cbind(x, y), family =binomial(link = logit))
+  #full_model <- glm(formula, data = cbind(x, y), family =binomial(link = logit))
   
   # Get the names of the predictor variables
   predictors <- names(x)
@@ -150,7 +228,7 @@ bootGLM <- function(x, y, B = 1000){
     y_boot <- y[indices]
     
     # Fit the logistic model with resampled data
-    boot_model <- glm(formula, data = cbind(x_boot, y_boot), family = "binomial")
+    boot_model <- glm(formula, data = cbind(x_boot, y_boot), family = binomial(link = logit))
     
     # Compute the standard errors of the predictor variables
     se <- summary(boot_model)$coefficients[, "Std. Error"]
@@ -160,11 +238,9 @@ bootGLM <- function(x, y, B = 1000){
   }
   # Compute the standard error estimates and return them as a data frame
   se_estimates <- apply(boot_results, 2, sd)
-  se_df <- data.frame(variable = predictors,se_estimate = se_estimates)  
+  se_df <- data.frame(se_estimate = se_estimates)   # variable = predictors,
   return(se_df)
 }
-
-summary(model)$coefficients
 ```
 
 ```{r}
@@ -174,6 +250,20 @@ result = bootGLM(x,y)
 
 result
 ```
+
+Inference: We cannot take the mean of the standard errors across
+bootstrap replicates because the standard errors are not additive in the
+same way as the coefficients. The standard errors represent the
+variability of the coefficient estimates due to random sampling, and
+taking the mean of the standard errors would not capture this
+variability properly.
+
+Instead, we took the standard deviation of the standard errors across
+bootstrap replicates, which provides an estimate of the sampling
+variability of the standard errors. By taking the standard deviation of
+the standard errors across bootstrap, we obtain a measure of the
+variability of the standard errors due to random sampling, which is what
+we are interested in estimating.
 
 ### **2(b) Consider the model selected by the forward selection algorithm from Problem 1(b). Apply your bootGLM, and compare with the standard errors returned by the summary function.**
 
@@ -196,6 +286,19 @@ se_summary
 # Print the standard errors from both methods side by side
 cbind(se_boot, se_summary)
 ```
+
+Inference:
+
+Comparing, the standard errors between the two methods, we see that the
+standard errors are larger for the summary than the bootGLM method, for
+all the predictors. These differences could be due to the assumptions
+and methods used by the two approaches. The bootGLM function estimates
+the standard errors using bootstrap resampling, which is a
+non-parametric method that does not make any assumptions about the
+distribution of the data. On the other hand, the summary function uses
+the asymptotic normal distribution of the maximum likelihood estimates
+to compute the standard errors, which assumes that the data follows a
+specific distribution.
 
 ### Team Contributions:
 
