@@ -113,3 +113,6 @@ se_summary
 # Print the standard errors from both methods side by side
 cbind(se_boot, se_summary)
 
+
+
+

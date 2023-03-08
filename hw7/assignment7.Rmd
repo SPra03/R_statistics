@@ -1,0 +1,206 @@
+---
+title: "Statistical Models HW7"
+author: "Sourabh Prakash and Priyanshi Shah"
+date: "2023-03-07"
+output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+library(ggplot2)
+```
+
+# **Question 1**
+
+### **Find the dataset Placekick.csv in the Datasets subfolder. Use this dataset to build a logistic regression model to estimate the probability of success for a placekick. Here is the data dictionary:**
+
+• week: Week of the season
+
+• distance: Distance of the placekick in yards
+
+• change: Lead-change (1) vs. non-lead-change (0) placekicks
+
+• elap30: Number of minutes remaining before the end of the half
+
+• PAT: Type of placekick, where a PAT attempt is a 1 and a field goal
+attempt is a 0
+
+• type: Outdoor (1) vs. dome (0) placekicks
+
+• field: Grass (1) vs. artificial turf (0) placekicks
+
+• wind: Windy conditions (1) vs. nonwindy conditions (0)
+
+• good: Successful (1) vs. failed (0) placekicks; this is our response
+variable
+
+```{r}
+data = read.csv("Placekick.csv")
+```
+
+### **1(a) Fit a logistic regression model with good as response and distance as predictor. Interpret the fitted model coefficients and visualize the model fit.**
+
+### Fitting the model
+
+```{r}
+#Fitting the model
+m=glm(good~distance,family = binomial(link = logit),data=data)
+summary(m)
+```
+
+```{r}
+plot(data$distance ,data$good)
+```
+
+### Creating a scatter plot with fitted logistic regression curve
+
+```{r}
+# Create a scatter plot with fitted logistic regression curve
+ggplot(data, aes(x = distance, y = good)) +
+  geom_point() +
+  stat_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE)
+```
+
+### **1(b) Now consider all predictors. Apply the forward selection algorithm to compute the forward selection path from 'intercept only' to 'full model' and chooses the model on that path that minimizes the AIC.**
+
+### Intercept-only model
+
+```{r}
+# Fit the initial intercept-only model
+model <- glm(good ~ 1, data = data, family = binomial)
+```
+
+### Forward Selection with AIC
+
+```{r}
+# Perform forward selection with AIC
+step(model, scope = ~ distance + change + elap30 + PAT + type + field + wind + 
+                      week, direction = "forward")
+```
+
+```{r}
+model = glm(formula = good ~ distance + PAT + change + wind, family = binomial, data = data)
+# Print the final model summary
+summary(model)
+```
+
+### 1(c) Consider the model selected by the forward selection algorithm. Compute the decision boundary when the decision threshold for the probability of success is 0.5.
+
+```{r}
+model = glm(formula = good ~ distance + PAT + change + wind, family = binomial, data = data)
+```
+
+```{r}
+#calculating for distance
+# distance = (0.5 - B0 - B2(PAT_mean) - B3(change_mean) - B4(wind_mean)) / B1
+distance <- (0.5 - 4.751 - 1.229 * mean(data$PAT) - (-0.3350) * mean(data$change)
+             - (-0.523) * mean(data$wind)) / (-0.087)
+distance
+```
+
+```{r}
+# pat = (0.5 - B0 - B1(distance_mean) - B3(change_mean) - B4(wind_mean)) / B2
+pat  <- (0.5 - 4.751 - (-0.087) * mean(data$distance) - (-0.3350) * mean(data$change)
+         - (-0.523) * mean(data$wind)) / (1.229)
+pat
+```
+
+```{r}
+# change = (0.5 - B0 - B1(distance_mean) -  B2(PAT_mean) - B4(wind_mean)) / B3 
+change  <- (0.5 - 4.751 - (-0.087) * mean(data$distance) - (1.229) * mean(data$PAT) 
+         - (-0.523) * mean(data$wind)) / (-0.335)
+change
+```
+
+```{r}
+# wind = (0.5 - B0 - B1(distance_mean) - B2(PAT_mean) - B3(change_mean) - / B4
+wind =  (0.5 - 4.751 - (-0.087) * mean(data$distance) - (1.229) * mean(data$PAT) 
+         - (-0.3350) * mean(data$change))/(-0.523)
+wind
+```
+
+# Question 2
+
+### **2(a) Write a function bootGLM(x, y, B=1000) that resamples observations and returns standard errors for each of the predictor variables (when the others are present in the model) in a logistic model.**
+
+### Function bootGLM(**x, y, B=1000**)
+
+```{r}
+bootGLM <- function(x, y, B = 1000){
+  # Define a logistic model formula with all predictors
+  formula <- as.formula(paste("y ~", paste(names(x), collapse = " + ")))
+  
+  # Fit the full logistic model
+  full_model <- glm(formula, data = cbind(x, y), family =binomial(link = logit))
+  
+  # Get the names of the predictor variables
+  predictors <- names(x)
+  
+  # Initialize a matrix to store the bootstrap results
+  boot_results <- matrix(0, nrow = B, ncol = length(predictors),
+                         dimnames = list(NULL, predictors))
+  
+  # Perform B bootstrap replicates
+  for (i in 1:B) {
+    # Resample the observations with replacement
+    indices <- sample(nrow(x), replace = TRUE)
+    x_boot <- x[indices, ]
+    y_boot <- y[indices]
+    
+    # Fit the logistic model with resampled data
+    boot_model <- glm(formula, data = cbind(x_boot, y_boot), family = "binomial")
+    
+    # Compute the standard errors of the predictor variables
+    se <- summary(boot_model)$coefficients[, "Std. Error"]
+    
+    # Store the standard errors in the boot_results matrix
+    boot_results[i, ] <- se[-1] 
+  }
+  # Compute the standard error estimates and return them as a data frame
+  se_estimates <- apply(boot_results, 2, sd)
+  se_df <- data.frame(variable = predictors,se_estimate = se_estimates)  
+  return(se_df)
+}
+
+summary(model)$coefficients
+```
+
+```{r}
+x = data[,!names(data) %in% c('good')]
+y = data$good  
+result = bootGLM(x,y)
+
+result
+```
+
+### **2(b) Consider the model selected by the forward selection algorithm from Problem 1(b). Apply your bootGLM, and compare with the standard errors returned by the summary function.**
+
+```{r}
+# Fit the model selected by AIC
+model <- glm(good ~ distance + PAT + change + wind, family = binomial, data = data)
+
+# Compute the standard errors using the bootGLM function
+se_boot <- bootGLM(data[, c("distance", "PAT", "change", "wind")], data$good)
+se_boot
+```
+
+```{r}
+# Get the standard errors from the summary of the model
+se_summary <- summary(model)$coefficients[-1, "Std. Error"]
+se_summary
+```
+
+```{r}
+# Print the standard errors from both methods side by side
+cbind(se_boot, se_summary)
+```
+
+### Team Contributions:
+
+Both the team members Sourabh Prakash and Priyanshi Shah have
+contributed equally to the assignment. The logics and inferences were
+drawn together. We mostly followed pair programming strategy. As per the
+implementation part, Question1 was done by Priyanshi Shah and Question2
+was done by Sourabh Prakash.
